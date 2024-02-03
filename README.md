@@ -16,16 +16,16 @@
 
 **This component will set up the following platforms.**
 
-| Platform | Description                          |
-| -------- | ------------------------------------ |
-| `sensor` | Show info from Emu M-Bus Center API. |
+| Platform | Description                                                                                                                                                                                                                                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `hub`    | Each M-Bus Center is represented in HA as a Hub.<br>Each Hub will have zero or more Devices (each corresponding to one Meter you have connected to the M-Bus Center).<br>Each Device has some amount of Entities depending on the type of meter the Device represents. All of those entities are of type 'sensor'. |
 
 ## Overview
 
 This Integration will help you pull data from an [Emu M-Bus Center](https://www.emuag.ch/en/products/m-bus-data-logger/) into Home Assistant.
-This Work is done independently and is in no way affiliated, endorsed or funded by Emu.
-I bought all my own hardware. Due to that, the Integration is currently only tested with the Emu M-Bus Center 250 with Emu Allrounder 3/75 Meters.
-If someone from Emu wants to get in touch with me, open an issue on this Repo with your info.
+This Work is done independently and is in no way affiliated, endorsed or funded by EMU.
+I bought all my own hardware. Due to that, the Integration is currently only tested with the EMU M-Bus Center 250 with EMU Allrounder 3/75 Meters.
+If someone from EMU wants to get in touch with me, open an issue on this Repo with your info.
 
 ## Installation
 
@@ -45,10 +45,24 @@ Just click here: [![Open in HACS.][my-hacs-badge]][open-in-hacs]
 Using your HA configuration directory (folder) as a starting point you should now also have this:
 
 ```text
-custom_components/emu_m_bus_center/__init__.py
-custom_components/emu_m_bus_center/config_flow.py
-custom_components/emu_m_bus_center/manifest.json
-custom_components/emu_m_bus_center/sensor.py
+custom_components/emu_m_bus_center/
+├── config_flow.py
+├── const.py
+├── device_types
+│   ├── devices.py
+│   ├── emu_1_40_v4_15val.py
+│   ├── emu_allrounder_v16_15val.py
+│   ├── emu_allrounder_v16_17val.py
+│   ├── emu_professional_v16_31val.py
+│   └── emu_professional_v16_32val.py
+├── emu_client.py
+├── __init__.py
+├── manifest.json
+├── sensor.py
+└── translations
+    ├── de.json
+    ├── en.json
+    └── sk.json
 ```
 
 ## Configuration
@@ -62,8 +76,8 @@ It will ask you for the IP address and Name of your M-Bus Center.
 Then it will scan your Center for available Sensors and add them to Home Assistant.
 If you do not want the default names for the meters, go to Integrations one more time, look for the Integration you just installed and click on the "x Devices".
 You will find a list of the sensors that were found. If you click on a single sensor, you'll get a dialog with a pencil in the upper right corner.
-Click that pencil and enter the Name you desire in the popup. By default, the name will be in the format `Emu Sensor-$ID/$SERIAL_NO@$CENTER_NAME`.
-Use the Web interface of your M-Bus Center as described below to match ID/Serial Number to the M-Bus Address you set on the meter itself.
+Click that pencil and enter the Name you desire in the popup. By default, the name will be in the format `$SENSOR_NAME ($SITE_NAME)`.
+Use the Web interface of your M-Bus Center as described below to match sensor/site name to the M-Bus Address you set on the meter itself.
 
 ## How to find the ID of your meter
 
@@ -80,13 +94,20 @@ The integration has been tested on the following devices:
 
 | Manufacturer | Product          | Firmware Version |
 | ------------ | ---------------- | ---------------- |
-| Emu          | M-Bus Center 250 | 1.10.1.0.r0      |
+| EMU          | M-Bus Center 250 | 1.10.1.0.r0      |
+
+EMU say that the EMU M-Center employs the same REST API as the M-Bus Center. I am therefore optimistic that this integration will work with the M-Center, but cannot confirm it.
 
 ### Meters
 
-| Manufacturer | Product               | Firmware Version |
-| ------------ | --------------------- | ---------------- |
-| Emu          | Allrounder 75/3 M-Bus | 1.4              |
+| Manufacturer | Product                     | Firmware Version<br>(as reported on meter's Display) | Firmware Version<br>(as reported by API) | Status          |
+| ------------ | --------------------------- | ---------------------------------------------------- | ---------------------------------------- | --------------- |
+| EMU          | Allrounder 3/75 M-Bus       | 1.4                                                  | 16                                       | Fully tested    |
+| EMU          | Professional 3/75 M-Bus     | 1.4                                                  | 16                                       | Somewhat tested |
+| EMU          | Professional II 3/100 M-Bus | 1.4                                                  | 16                                       | Experimental    |
+| EMU          | 1/40                        | ???                                                  | 4                                        | Experimental    |
+
+If you use one of the Meters that are marked as "Experimental", please open an issue and let me know if it works for you.
 
 ## Contributions are welcome!
 
@@ -98,7 +119,7 @@ This project was generated from [@oncleben31](https://github.com/oncleben31)'s [
 
 Code template was mainly taken from [@Ludeeus](https://github.com/ludeeus)'s [integration_blueprint][integration_blueprint] template
 
-For the config flow, the initialisatioon and update of the sensors I looked at many existing repos, chief among them [@CubicPill](https://github.com/CubicPill)'s [China Southern Power Grid Statistics](https://github.com/CubicPill/china_southern_power_grid_stat)
+For the config flow, the initialization and update of the sensors I looked at many existing repos, chief among them [@CubicPill](https://github.com/CubicPill)'s [China Southern Power Grid Statistics](https://github.com/CubicPill/china_southern_power_grid_stat)
 
 ---
 
